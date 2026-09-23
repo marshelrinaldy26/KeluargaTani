@@ -1,0 +1,1 @@
+dotnet ef dbcontext scaffold "Name=ConnectionStrings:MySqlConnection" Pomelo.EntityFrameworkCore.MySql --output-dir Models --context ApplicationDbContext --force

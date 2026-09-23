@@ -1,0 +1,101 @@
+﻿#loading {
+   width: 100%;
+   height: 100%;
+   top: 0;
+   left: 0;
+   position: fixed;
+   display: block;
+   opacity: 0.7;
+   background-color: #fff;
+   z-index: 2999;
+   text-align: center;
+}
+
+#loading-image {
+  position: absolute;
+  margin:0;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  z-index: 3000;
+}
+
+#stay-button{
+    display:inline-block;
+    position:relative;
+}
+
+.form-control.inputTextBox{
+    width:100%;
+}
+
+#detailKirimGrid .k-header .k-link{
+    text-align: center;
+}
+
+#detailTerimaGrid .k-header .k-link{
+    text-align: center;
+}
+
+.swal2-popup {
+  font-size: 1.6rem;
+}
+
+.form-control{
+    border-radius:3px;
+}
+
+.k-input{
+    height:1.94em;
+    border-radius: 3px;
+}
+
+.textonly {
+    background-color: transparent !important;
+    border: 0;
+    font-size: 1em;
+}
+
+.customLabel{
+    color: #333;
+    border: none;
+}
+
+#SupplierGrid tbody input {
+    color: black;
+}
+
+#CabangGrid tbody input {
+    color: black;
+}
+
+#UserGrid tbody input {
+    color: black;
+}
+
+#JenisGrid tbody input {
+    color: black;
+}
+
+#LokasiGrid tbody input {
+    color: black;
+}
+
+#TokoGrid tbody input {
+    color: black;
+}
+
+k-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+
+.disabledDiv{
+    pointer-events:none;
+    opacity: 0.4;
+}
+
+.clickbox{
+    cursor:pointer;
+}

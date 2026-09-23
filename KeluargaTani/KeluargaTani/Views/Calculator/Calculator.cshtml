@@ -1,0 +1,159 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Kalkulator Bisnis - Keluarga Tani";
+}
+
+<!-- ========================================== -->
+<!-- VIEW: KALKULATOR BISNIS (3 CALCULATORS)   -->
+<!-- ========================================== -->
+<div id="view-calculator" class="app-view space-y-6">
+    <div>
+    <h2 class="text-xl font-black tracking-tight text-slate-800 dark:text-slate-100">Kalkulator Usaha & Finansial</h2>
+    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Alat bantu hitung cepat, rekomendasi penetapan harga jual, dan simulasi target omzet</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
+    <!-- 1. Kalkulator Standar Aritmatika -->
+    <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+        <div class="flex items-center space-x-2 mb-3">
+        <span class="text-base">🧮</span>
+        <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100">Kalkulator Standar</h3>
+        </div>
+
+        <!-- Display -->
+        <div class="bg-slate-100 dark:bg-slate-800 p-3.5 rounded-xl mb-4 text-right">
+        <div id="calc-history" class="text-[11px] text-slate-400 font-mono h-4 overflow-hidden"></div>
+        <div id="calc-display" class="text-2xl font-black font-mono text-slate-800 dark:text-slate-100 truncate mt-1">0</div>
+        </div>
+
+        <!-- Keypad -->
+        <div class="grid grid-cols-4 gap-2 flex-1">
+        <button onclick="CalculatorManager.handleCalcInput('clear')" class="calc-btn p-2.5 bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-300 font-bold rounded-xl text-xs hover:bg-red-200">C</button>
+        <button onclick="CalculatorManager.handleCalcInput('backspace')" class="calc-btn p-2.5 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs hover:bg-slate-300">⌫</button>
+        <button onclick="CalculatorManager.handleCalcInput('percent')" class="calc-btn p-2.5 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs hover:bg-slate-300">%</button>
+        <button onclick="CalculatorManager.handleCalcInput('op', '÷')" class="calc-btn p-2.5 bg-emerald-600 text-white font-bold rounded-xl text-sm hover:bg-emerald-700">÷</button>
+
+        <button onclick="CalculatorManager.handleCalcInput('digit', '7')" class="calc-btn p-3 bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-sm hover:bg-slate-100">7</button>
+        <button onclick="CalculatorManager.handleCalcInput('digit', '8')" class="calc-btn p-3 bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-sm hover:bg-slate-100">8</button>
+        <button onclick="CalculatorManager.handleCalcInput('digit', '9')" class="calc-btn p-3 bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-sm hover:bg-slate-100">9</button>
+        <button onclick="CalculatorManager.handleCalcInput('op', '×')" class="calc-btn p-2.5 bg-emerald-600 text-white font-bold rounded-xl text-sm hover:bg-emerald-700">×</button>
+
+        <button onclick="CalculatorManager.handleCalcInput('digit', '4')" class="calc-btn p-3 bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-sm hover:bg-slate-100">4</button>
+        <button onclick="CalculatorManager.handleCalcInput('digit', '5')" class="calc-btn p-3 bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-sm hover:bg-slate-100">5</button>
+        <button onclick="CalculatorManager.handleCalcInput('digit', '6')" class="calc-btn p-3 bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-sm hover:bg-slate-100">6</button>
+        <button onclick="CalculatorManager.handleCalcInput('op', '-')" class="calc-btn p-2.5 bg-emerald-600 text-white font-bold rounded-xl text-sm hover:bg-emerald-700">-</button>
+
+        <button onclick="CalculatorManager.handleCalcInput('digit', '1')" class="calc-btn p-3 bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-sm hover:bg-slate-100">1</button>
+        <button onclick="CalculatorManager.handleCalcInput('digit', '2')" class="calc-btn p-3 bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-sm hover:bg-slate-100">2</button>
+        <button onclick="CalculatorManager.handleCalcInput('digit', '3')" class="calc-btn p-3 bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-sm hover:bg-slate-100">3</button>
+        <button onclick="CalculatorManager.handleCalcInput('op', '+')" class="calc-btn p-2.5 bg-emerald-600 text-white font-bold rounded-xl text-sm hover:bg-emerald-700">+</button>
+
+        <button onclick="CalculatorManager.handleCalcInput('plusMinus')" class="calc-btn p-3 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs hover:bg-slate-300">±</button>
+        <button onclick="CalculatorManager.handleCalcInput('digit', '0')" class="calc-btn p-3 bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-sm hover:bg-slate-100">0</button>
+        <button onclick="CalculatorManager.handleCalcInput('digit', '.')" class="calc-btn p-3 bg-slate-50 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-sm hover:bg-slate-100">.</button>
+        <button onclick="CalculatorManager.handleCalcInput('equals')" class="calc-btn p-2.5 bg-teal-600 text-white font-black rounded-xl text-base hover:bg-teal-700 shadow">=</button>
+        </div>
+    </div>
+
+    <!-- 2. Kalkulator Rekomendasi Harga Jual -->
+    <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        <div>
+        <div class="flex items-center space-x-2 mb-1.5">
+            <span class="text-base">🏷️</span>
+            <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100">Kalkulator Rekomendasi Harga Jual</h3>
+        </div>
+        <p class="text-[11px] text-slate-400 mb-4">Hitung harga jual ideal agar target margin terpenuhi</p>
+
+        <form id="form-price-calc" class="space-y-3.5">
+            <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Modal per Unit (Rp)</label>
+            <input type="number" id="price-calc-cost" value="50000" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+            </div>
+            <div>
+            <div class="flex items-center justify-between mb-1">
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300">Target Margin (%)</label>
+                <span class="text-[11px] text-emerald-600 font-bold">Standar: 30%</span>
+            </div>
+            <input type="number" id="price-calc-margin" value="30" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+            </div>
+        </form>
+        </div>
+
+        <!-- Hasil Kalkulasi -->
+        <div class="mt-5 p-4 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200 dark:border-emerald-800 space-y-2 text-xs">
+        <div class="flex justify-between items-center text-slate-600 dark:text-slate-300">
+            <span>Rekomendasi Harga Persis:</span>
+            <span id="price-calc-res-recommend" class="font-bold text-slate-800 dark:text-slate-100">Rp 65.000</span>
+        </div>
+        <div class="flex justify-between items-center text-emerald-700 dark:text-emerald-300 font-bold text-sm pt-1 border-t border-emerald-200 dark:border-emerald-800">
+            <span>Pembulatan Ritel (Rp 500):</span>
+            <span id="price-calc-res-round" class="text-base text-emerald-700 dark:text-emerald-400 font-black">Rp 65.000</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600 dark:text-slate-300 pt-1">
+            <span>Keuntungan / Unit:</span>
+            <span id="price-calc-res-profit" class="font-semibold text-emerald-600">Rp 15.000</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600 dark:text-slate-300">
+            <span>Margin Riil Efektif:</span>
+            <span id="price-calc-res-margin" class="font-bold px-2 py-0.5 rounded text-[10px] margin-badge-green">30%</span>
+        </div>
+        </div>
+    </div>
+
+    <!-- 3. Kalkulator Target Penjualan -->
+    <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+        <div>
+        <div class="flex items-center space-x-2 mb-1.5">
+            <span class="text-base">🎯</span>
+            <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100">Kalkulator Target Penjualan</h3>
+        </div>
+        <p class="text-[11px] text-slate-400 mb-4">Simulasikan berapa unit yang harus terjual untuk mencapai nominal profit tertentu</p>
+
+        <form id="form-target-calc" class="space-y-3">
+            <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Target Nominal Laba / Profit (Rp)</label>
+            <input type="number" id="target-calc-profit" value="5000000" class="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Modal / Unit (Rp)</label>
+                <input type="number" id="target-calc-cost" value="40000" class="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Harga Jual / Unit</label>
+                <input type="number" id="target-calc-price" value="55000" class="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
+            </div>
+            </div>
+            <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Durasi Periode (Hari)</label>
+            <input type="number" id="target-calc-days" value="30" class="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
+            </div>
+        </form>
+        </div>
+
+        <!-- Hasil Kalkulasi Target -->
+        <div id="target-calc-results" class="mt-4 p-4 bg-blue-50 dark:bg-blue-950/40 rounded-xl border border-blue-200 dark:border-blue-800 space-y-1.5 text-xs">
+        <div class="flex justify-between items-center font-bold text-blue-900 dark:text-blue-200">
+            <span>Wajib Terjual:</span>
+            <span id="target-calc-res-units" class="text-sm text-blue-600 dark:text-blue-400 font-black">334 unit</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600 dark:text-slate-300 text-[11px]">
+            <span>Total Omzet Dibutuhkan:</span>
+            <span id="target-calc-res-revenue" class="font-semibold text-slate-800 dark:text-slate-200">Rp 18.370.000</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600 dark:text-slate-300 text-[11px]">
+            <span>Modal Dibutuhkan:</span>
+            <span id="target-calc-res-capital" class="font-semibold">Rp 13.360.000</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600 dark:text-slate-300 text-[11px] pt-1 border-t border-blue-200 dark:border-blue-800">
+            <span>Target Penjualan Harian:</span>
+            <span id="target-calc-res-daily-units" class="font-bold text-emerald-600">11.2 unit / hari</span>
+        </div>
+        </div>
+
+        <div id="target-calc-error" class="hidden mt-4 p-3 bg-red-50 text-red-700 rounded-xl text-xs"></div>
+    </div>
+
+    </div>
+</div>

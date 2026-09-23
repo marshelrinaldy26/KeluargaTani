@@ -1,0 +1,172 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Manajemen Pembeli - Keluarga Tani";
+}
+
+<!-- ========================================== -->
+<!-- VIEW: LAPORAN & ANALITIK DETAIL           -->
+<!-- ========================================== -->
+<div id="view-reports" class="app-view space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div>
+        <h2 class="text-xl font-black tracking-tight text-slate-800 dark:text-slate-100">Laporan & Analisis Usaha</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Analisis kinerja produk, loyalitas pembeli, dan filter multi-periode</p>
+    </div>
+    <button onclick="window.print()" class="px-3.5 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-200 transition flex items-center space-x-1.5">
+        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+        <span>Cetak Laporan</span>
+    </button>
+    </div>
+
+    <!-- Filter Cepat Bar (Hari ini, Minggu ini, Bulan ini, Semester ini, Semua) -->
+    <div class="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-wrap items-center gap-2">
+    <span class="text-xs font-bold text-slate-500 mr-2">Filter Cepat:</span>
+    <button onclick="App.setReportQuickFilter('today')" data-preset="today" class="btn-filter-preset px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">Hari Ini</button>
+    <button onclick="App.setReportQuickFilter('week')" data-preset="week" class="btn-filter-preset px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">Minggu Ini</button>
+    <button onclick="App.setReportQuickFilter('month')" data-preset="month" class="btn-filter-preset px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">Bulan Ini</button>
+    <button onclick="App.setReportQuickFilter('semester')" data-preset="semester" class="btn-filter-preset px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">Semester Ini</button>
+    <button onclick="App.setReportQuickFilter('all')" data-preset="all" class="btn-filter-preset px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 text-white transition">Semua Waktu</button>
+    </div>
+
+    <!-- KPI Summary for Reports -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+    <div class="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div class="text-[11px] text-slate-400 font-semibold">Total Omzet</div>
+        <div id="rep-total-sales" class="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 mt-1">Rp 0</div>
+    </div>
+    <div class="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div class="text-[11px] text-slate-400 font-semibold">Total Modal</div>
+        <div id="rep-total-cost" class="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 mt-1">Rp 0</div>
+    </div>
+    <div class="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div class="text-[11px] text-slate-400 font-semibold">Laba Bersih</div>
+        <div id="rep-total-profit" class="text-base sm:text-lg font-black text-emerald-600 dark:text-emerald-400 mt-1">Rp 0</div>
+    </div>
+    <div class="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div class="text-[11px] text-slate-400 font-semibold flex items-center justify-between">
+        <span>Rata Margin</span>
+        <span id="rep-margin-badge" class="px-1.5 py-0.2 rounded text-[9px] font-bold margin-badge-green">≥30%</span>
+        </div>
+        <div id="rep-avg-margin" class="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 mt-1">0%</div>
+    </div>
+    <div class="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div class="text-[11px] text-slate-400 font-semibold">Total Diskon</div>
+        <div id="rep-total-discount" class="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 mt-1">Rp 0</div>
+    </div>
+    <div class="bg-white dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div class="text-[11px] text-slate-400 font-semibold">Jumlah Transaksi</div>
+        <div id="rep-tx-count" class="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 mt-1">0</div>
+    </div>
+    </div>
+
+    <!-- Section: Analisis Produk Terperinci (8 Card Grid) -->
+    <div class="space-y-3">
+    <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center space-x-2">
+        <span>🌾 Analisis Ekstrem Produk (Terbesar & Terkecil)</span>
+    </h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        
+        <!-- Volume Terbesar -->
+        <div class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="text-[11px] font-bold text-emerald-600 mb-1">📦 Volume Terbesar (Paling Laris)</div>
+        <div id="rep-top-volume"></div>
+        </div>
+
+        <!-- Volume Terkecil -->
+        <div class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="text-[11px] font-bold text-slate-500 mb-1">📦 Volume Terkecil</div>
+        <div id="rep-bottom-volume"></div>
+        </div>
+
+        <!-- Omzet Terbesar -->
+        <div class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="text-[11px] font-bold text-blue-600 mb-1">💰 Pendapatan (Omzet) Terbesar</div>
+        <div id="rep-top-revenue"></div>
+        </div>
+
+        <!-- Omzet Terkecil -->
+        <div class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="text-[11px] font-bold text-slate-500 mb-1">💰 Pendapatan Terkecil</div>
+        <div id="rep-bottom-revenue"></div>
+        </div>
+
+        <!-- Profit Terbesar -->
+        <div class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="text-[11px] font-bold text-emerald-600 mb-1">🔥 Laba (Profit) Terbesar</div>
+        <div id="rep-top-profit"></div>
+        </div>
+
+        <!-- Profit Terkecil -->
+        <div class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="text-[11px] font-bold text-slate-500 mb-1">📉 Laba Terkecil</div>
+        <div id="rep-bottom-profit"></div>
+        </div>
+
+        <!-- Margin Tertinggi -->
+        <div class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="text-[11px] font-bold text-teal-600 mb-1">🟢 Margin Tertinggi</div>
+        <div id="rep-top-margin"></div>
+        </div>
+
+        <!-- Margin Terendah -->
+        <div class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="text-[11px] font-bold text-red-600 mb-1">🔴 Margin Terendah</div>
+        <div id="rep-bottom-margin"></div>
+        </div>
+
+    </div>
+    </div>
+
+    <!-- Section: Analisis Pembeli (2 Card Grid) -->
+    <div class="space-y-3">
+    <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center space-x-2">
+        <span>🤝 Analisis Pembeli Unggulan</span>
+    </h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 font-bold flex items-center justify-center text-lg">
+            🏆
+        </div>
+        <div>
+            <div class="text-[11px] font-bold text-purple-600">Pembeli Transaksi Terbanyak (Paling Loyal)</div>
+            <div id="rep-top-frequent" class="mt-0.5"></div>
+        </div>
+        </div>
+
+        <div class="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 font-bold flex items-center justify-center text-lg">
+            💎
+        </div>
+        <div>
+            <div class="text-[11px] font-bold text-emerald-600">Pembeli Nilai Belanja Terbesar (Sultan Tani)</div>
+            <div id="rep-top-spender" class="mt-0.5"></div>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Tabel Transaksi dalam Laporan -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-4 border-b border-slate-100 dark:border-slate-800">
+        <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100">Daftar Transaksi Terfilter</h3>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs">
+        <thead>
+            <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 font-bold uppercase text-[10px]">
+            <th class="py-2.5 px-3 text-center">No</th>
+            <th class="py-2.5 px-3">Tanggal</th>
+            <th class="py-2.5 px-3">Pembeli</th>
+            <th class="py-2.5 px-3">Barang</th>
+            <th class="py-2.5 px-3 text-center">Qty</th>
+            <th class="py-2.5 px-3 text-right">Total Jual</th>
+            <th class="py-2.5 px-3 text-right">Profit</th>
+            <th class="py-2.5 px-3 text-center">Margin</th>
+            </tr>
+        </thead>
+        <tbody id="report-table-tbody"></tbody>
+        </table>
+    </div>
+    </div>
+
+</div>

@@ -1,0 +1,275 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Manajemen Pembeli - Keluarga Tani";
+}
+
+<!-- ========================================== -->
+<!-- VIEW: MANAJEMEN PEMBELI                   -->
+<!-- ========================================== -->
+<div id="view-customers" class="app-view space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div>
+        <h2 class="text-xl font-black tracking-tight text-slate-800 dark:text-slate-100">Data Pembeli & Kemitraan</h2>
+        <p id="customers-count-info" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Memuat data pembeli...</p>
+    </div>
+    <button onclick="openCustomerModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition flex items-center space-x-1.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+        <span>Tambah Pembeli Baru</span>
+    </button>
+    </div>
+
+    <!-- Customers Table -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+        <table id="customerTable" class="w-full text-left border-collapse text-xs">
+        <thead>
+            <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px]">
+                <th class="py-3 px-3 text-center">No</th>
+                <th class="py-3 px-3">Nama Pembeli</th>
+                <th class="py-3 px-3">Kontak / WhatsApp</th>
+                <th class="py-3 px-3">Alamat</th>
+                <th class="py-3 px-3 text-center">Frekuensi</th>
+                <th class="py-3 px-3 text-right">Total Belanja</th>
+                <th class="py-3 px-3 text-right">Kontribusi Laba</th>
+                <th class="py-3 px-3 text-center">Aksi</th>
+            </tr>
+            <tr id="filterRow">
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="customers-table-tbody">
+        </tbody>
+        </table>
+    </div>
+
+    <div id="customers-empty-state" class="hidden py-12 px-4 text-center">
+        <div class="text-3xl mb-2">👥</div>
+        <h4 class="font-bold text-sm text-slate-700 dark:text-slate-300">Belum Ada Data Pembeli</h4>
+        <p class="text-xs text-slate-400 mt-1">Catat pelanggan setia Anda agar riwayat belanja dan komunikasi via WhatsApp lebih mudah.</p>
+        <button onclick="openCustomerModal()" class="mt-4 px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow">
+        + Tambah Pembeli Baru
+        </button>
+    </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+  <!-- MODAL: FORM PEMBELI (TAMBAH / EDIT)        -->
+  <!-- ========================================== -->
+  <div id="modal-customer" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-5 sm:p-6">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 id="modal-customer-title" class="font-extrabold text-base text-slate-800 dark:text-slate-100">Tambah Pembeli Baru</h3>
+        <button onclick="closeModal('modal-customer')" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <form id="form-customer" onsubmit="submitPembeli(event)" class="mt-4 space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nama Pembeli / Petani / Mitra</label>
+          <input type="text" id="cust-name" required placeholder="Contoh: Pak Joko Subagyo" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nomor Kontak / WhatsApp (Opsional)</label>
+          <input type="text" id="cust-phone" placeholder="Contoh: 081234567890" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-mono">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Alamat Lahan / Domisili</label>
+          <textarea id="cust-address" rows="2" placeholder="Contoh: Dusun Sukamaju RT 01/02..." class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Catatan Pelanggan</label>
+          <input type="text" id="cust-notes" placeholder="Contoh: Langganan pupuk, ketua kelompok tani..." class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
+        </div>
+
+        <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" onclick="closeModal('modal-customer')" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-bold">Batal</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow">Simpan Pembeli</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: RIWAYAT TRANSAKSI PEMBELI           -->
+  <!-- ========================================== -->
+  <div id="modal-customer-history" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-2xl w-full p-5 sm:p-6 my-8">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div>
+          <h3 id="modal-history-cust-name" class="font-black text-base text-slate-800 dark:text-slate-100">Riwayat Pembeli</h3>
+          <p id="modal-history-phone" class="text-xs text-slate-400 mt-0.5 font-mono"></p>
+        </div>
+        <button onclick="closeModal('modal-customer-history')" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <!-- Quick KPI Pembeli -->
+      <div class="grid grid-cols-3 gap-2.5 my-4">
+        <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
+          <div class="text-[10px] text-slate-400 font-bold uppercase">Frekuensi Belanja</div>
+          <div id="modal-history-total-tx" class="text-sm font-extrabold text-slate-800 dark:text-slate-100 mt-0.5">0</div>
+        </div>
+        <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
+          <div class="text-[10px] text-slate-400 font-bold uppercase">Total Belanja</div>
+          <div id="modal-history-total-spent" class="text-sm font-extrabold text-slate-800 dark:text-slate-100 mt-0.5">Rp 0</div>
+        </div>
+        <div class="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl">
+          <div class="text-[10px] text-emerald-600 font-bold uppercase">Kontribusi Laba</div>
+          <div id="modal-history-total-profit" class="text-sm font-black text-emerald-600 dark:text-emerald-400 mt-0.5">Rp 0</div>
+        </div>
+      </div>
+
+      <!-- History Table -->
+      <div class="max-h-60 overflow-y-auto border border-slate-100 dark:border-slate-800 rounded-xl">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-50 dark:bg-slate-800/80 text-slate-400 text-[10px] uppercase font-bold sticky top-0">
+              <th class="py-2 px-3">Tanggal</th>
+              <th class="py-2 px-3">Barang</th>
+              <th class="py-2 px-3 text-center">Qty</th>
+              <th class="py-2 px-3 text-right">Total</th>
+              <th class="py-2 px-3 text-center">Margin</th>
+            </tr>
+          </thead>
+          <tbody id="modal-history-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="flex justify-end pt-4">
+        <button onclick="closeModal('modal-customer-history')" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+@section Scripts {
+    <script>
+
+      $(document).ready(function(){
+          initiallizeTable();
+      });
+
+      let dataTable;
+      function initiallizeTable(){
+        console.log('oke masuk ke initiallizeTable');
+        if(dataTable) dataTable.destroy(); dataTable = null;
+        dataTable = $('#customerTable').on('processing.dt', function (e, settings, processing) {
+            if (processing) {
+                Swal.fire({
+                    title: "Memuat Data...",
+                    text: "Silahkan tunggu sebentar",
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            } else {
+                Swal.close();
+            }
+        }).DataTable({
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        url: '@Url.Action("ReadCustomerData", "Customer")',
+                        type: 'POST',
+                        data: {
+                            jenisTransaksi: 'Mutasi'
+                        },
+                        dataSrc: function (json) {
+                            console.log('value json : ', json.data);
+                            return json.data; 
+                        },
+                    },
+                    columns: [
+                        { 
+                            data: null,
+                            orderable: false,
+                            searchable: false,
+                            render: function (data, type, row, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            }
+                        },
+                        { data: 'namaPembeli' },
+                        { data: 'kontakPembeli' },
+                        { data: 'alamat' },
+                        { data: 'frekuensi' },
+                        { data: 'totalBelanja' },
+                        { data: 'kontribusiLaba' },
+                        {
+                            data: null,
+                            render: function(data, type, row){
+                                return '<button type="button" class="btn btn-sm btn-danger" onclick="">Delete</button>';
+                            }
+                        },
+                    ],
+                    columnDefs: [
+                        {
+                            targets: '_all',
+                            className: 'dt-center',
+                        },
+                    ],
+                    initComplete: function () {
+                        ShowSearchRowWithDateAndBoolean({
+                            api: this.api(),
+                            excluded: [0,7],
+                            dateColumns: [],
+                            booleanColumns: [],
+                            colLimit: 7,
+                        });
+
+                        $(this.api().table().container()).find("#filterRow").show();
+                        baseInitComplete.call(this);
+                    },
+                    drawCallback: function () {
+                    }
+                });
+
+        }
+
+      function openCustomerModal() {
+          $('#modal-customer').removeClass('hidden').addClass('flex');
+      }
+
+      function closeModal(modalId) {
+          $('#' + modalId).addClass('hidden').removeClass('flex');
+      }
+
+      function submitPembeli(e) {
+          e.preventDefault();
+          const namaPembeli = $('#cust-name').val();
+          const nomorPembeli = $('#cust-phone').val();
+          const alamatPembeli = $('#cust-address').val();
+          const catatanPembeli = $('#cust-notes').val();
+          $.ajax({
+            url: '@Url.Action("TambahPembeliBaru", "Customer")',
+            type: 'POST',
+            data: {
+                namaPembeli: namaPembeli,
+                nomorPembeli: nomorPembeli,
+                alamatPembeli: alamatPembeli,
+                catatanPembeli: catatanPembeli,
+            },
+            success: function(data){
+                console.log('oke aman');
+            }
+          });
+          
+          alert("Tombol Simpan Pembeli diklik! Anda bisa menghubungkannya ke Controller C# dengan $.ajax disini.");
+          closeModal('modal-customer');
+      }
+    </script>
+}
