@@ -4,19 +4,18 @@
 }
 <div id="view-sales" class="app-view space-y-6">
     
-    <!-- Header Penjualan -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
     <div>
         <h2 class="text-xl font-black tracking-tight text-slate-800 dark:text-slate-100">Data Transaksi Penjualan</h2>
         @* <p id="sales-count-info" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Memuat data...</p> *@
     </div> 
     <div class="flex flex-wrap items-center gap-2">
-        <button onclick="App.openEksportExcel()" class="px-3.5 py-2 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-300 text-xs font-bold rounded-xl border border-emerald-300 dark:border-emerald-800 transition flex items-center space-x-1.5 shadow-sm">
+        <button onclick="openEksportExcel()" class="px-3.5 py-2 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-300 text-xs font-bold rounded-xl border border-emerald-300 dark:border-emerald-800 transition flex items-center space-x-1.5 shadow-sm">
         <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
         <span>Export Excel</span>
         </button>
 
-        <button onclick="App.openSaleModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition flex items-center space-x-1.5">
+        <button onclick="openSaleModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition flex items-center space-x-1.5">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
         <span>Catat Penjualan Baru</span>
         </button>
@@ -38,9 +37,9 @@
 
         <!-- Filter Kategori -->
         <div>
-        <label class="block text-[11px] font-bold text-slate-500 mb-1">Kategori Barang</label>
-        <select id="sales-filter-category" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100">
-            <option value="all">Semua Kategori</option>
+        <label class="block text-[11px] font-bold text-slate-500 mb-1">Product</label>
+        <select id="sales-filter-product" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100">
+            <option value="all">Product</option>
         </select>
         </div>
 
@@ -102,7 +101,7 @@
         </div>
         <h4 class="font-bold text-sm text-slate-700 dark:text-slate-300">Belum Ada Transaksi Penjualan</h4>
         <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">Mulai catat penjualan barang pertanian Anda atau muat data contoh untuk eksplorasi.</p>
-        <button onclick="App.openSaleModal()" class="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow">
+        <button onclick="openSaleModal()" class="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow">
         + Catat Penjualan Sekarang
         </button>
     </div>
@@ -114,12 +113,12 @@
     <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-2xl w-full p-5 sm:p-6 my-8">
       <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
         <h3 id="modal-sale-title" class="font-extrabold text-base text-slate-800 dark:text-slate-100">Catat Penjualan Baru</h3>
-        <button onclick="App.closeModal('modal-sale')" class="text-slate-400 hover:text-slate-600 p-1">
+        <button onclick="closeModal('modal-sale')" class="text-slate-400 hover:text-slate-600 p-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
       </div>
 
-      <form id="form-sale" onsubmit="App.handleSaleSubmit(event)" class="mt-4 space-y-4">
+      <form id="form-sale" onsubmit="handleSaleSubmit(event)" class="mt-4 space-y-4">
         
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
@@ -128,7 +127,7 @@
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Pilih Pembeli Terdaftar</label>
-            <select id="sale-cust-select" onchange="App.onCustomerSelectChange(this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
+            <select id="sale-cust-select" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
               <!-- Diisi otomatis -->
             </select>
           </div>
@@ -142,7 +141,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Pilih dari Master Produk</label>
-            <select id="sale-prod-select" onchange="App.onProductSelectChange(this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
+            <select id="sale-prod-select" onchange="onProductSelectChange(this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
               <!-- Diisi otomatis -->
             </select>
           </div>
@@ -157,15 +156,15 @@
         <div class="grid grid-cols-3 gap-2.5">
           <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Harga Jual / Unit (Rp)</label>
-            <input type="number" id="sale-selling-price" required oninput="App.calculateSaleFormLive()" placeholder="0" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-slate-100">
+            <input type="number" id="sale-selling-price" required oninput="calculateSaleFormLive()" placeholder="0" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-slate-100">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Modal / Unit (Rp)</label>
-            <input type="number" id="sale-cost-price" required oninput="App.calculateSaleFormLive()" placeholder="0" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
+            <input type="number" id="sale-cost-price" required oninput="calculateSaleFormLive()" placeholder="0" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Jumlah (Qty)</label>
-            <input type="number" id="sale-qty" value="1" min="1" required oninput="App.calculateSaleFormLive()" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-center">
+            <input type="number" id="sale-qty" value="1" min="1" required oninput="calculateSaleFormLive()" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-center">
           </div>
         </div>
 
@@ -173,14 +172,14 @@
         <div class="grid grid-cols-2 gap-2.5">
           <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tipe Diskon</label>
-            <select id="sale-discount-type" onchange="App.calculateSaleFormLive()" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
+            <select id="sale-discount-type" onchange="calculateSaleFormLive()" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
               <option value="nom">Nominal Rupiah (Rp)</option>
               <option value="pct">Persentase (%)</option>
             </select>
           </div>
           <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nilai Diskon</label>
-            <input type="number" id="sale-discount-value" value="0" oninput="App.calculateSaleFormLive()" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
+            <input type="number" id="sale-discount-value" value="0" oninput="calculateSaleFormLive()" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
           </div>
         </div>
 
@@ -216,7 +215,7 @@
         </div>
 
         <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-          <button type="button" onclick="App.closeModal('modal-sale')" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 transition">
+          <button type="button" onclick="closeModal('modal-sale')" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 transition">
             Batal
           </button>
           <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow transition">
@@ -230,22 +229,58 @@
 
 @section Scripts {
     <script>
-        // Inisialisasi objek App minimal karena file js/app.js bawaan belum di-copy ke project ini.
-        if (typeof App === 'undefined') {
-            window.App = {};
+
+        $(document).ready(function(){
+           
+        });
+
+        function loadDaftarPembeli() {
+            $.ajax({
+                url: '@Url.Action("GetCustomerList", "Customer")',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    const $select = $('#sale-cust-select');
+                    $select.empty().append('<option value=""></option>');
+                    $.each(data, function (index, item) {
+                        $select.append(new Option(item.text, item.value));
+                    });
+                    $select.select2({
+                        width: '100%',
+                        placeholder: "-- Pilih Pembeli Terdaftar --",
+                        allowClear: true
+                    });
+                }
+            });
         }
 
-        // Fungsi membuka modal catat penjualan
-        App.openSaleModal = function() {
-            const modal = document.getElementById('modal-sale');
-            if(modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            }
+        function loadDaftarProduk() {
+            $.ajax({
+                url: '@Url.Action("GetProductList", "Product")',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    const $select = $('#sale-prod-select');
+                    $select.empty().append('<option value=""></option>');
+                    $.each(data, function (index, item) {
+                        $select.append(new Option(item.text, item.value));
+                    });
+                    $select.select2({
+                        width: '100%',
+                        placeholder: "-- Pilih Produk --",
+                        allowClear: true
+                    });
+                }
+            });
+        }
+
+        function openSaleModal() {
+            loadDaftarPembeli();
+            loadDaftarProduk();
+            $('#modal-sale').removeClass('hidden').addClass('flex');
         };
 
-        // Fungsi membuka modal impor (jika HTML-nya sudah dipaste)
-        App.openImportModal = function() {
+        function openImportModal() {
             const modal = document.getElementById('modal-import-excel');
             if(modal) {
                 modal.classList.remove('hidden');
@@ -255,8 +290,7 @@
             }
         };
 
-        // Fungsi umum untuk menutup modal berdasarkan ID
-        App.closeModal = function(modalId) {
+        function closeModal(modalId) {
             const modal = document.getElementById(modalId);
             if(modal) {
                 modal.classList.add('hidden');
@@ -264,12 +298,12 @@
             }
         };
 
-        App.exportSalesExcel = function() { alert("Fitur ekspor excel akan dibuat di C# Controller."); };
-        App.handleSaleSubmit = function(event) { 
+        function exportSalesExcel() { alert("Fitur ekspor excel akan dibuat di C# Controller."); };
+        function handleSaleSubmit(event) { 
             event.preventDefault(); 
             alert("Tombol simpan diklik! Anda bisa menambahkan AJAX jQuery di sini nanti."); 
-            App.closeModal('modal-sale'); 
+            closeModal('modal-sale'); 
         };
-        App.calculateSaleFormLive = function() { console.log('Kalkulasi otomatis berjalan...'); };
+        function calculateSaleFormLive() { console.log('Kalkulasi otomatis berjalan...'); };
     </script>
 }

@@ -1,1 +1,1 @@
-dotnet ef dbcontext scaffold "Name=ConnectionStrings:MySqlConnection" Pomelo.EntityFrameworkCore.MySql --output-dir Models --context ApplicationDbContext --force
+dotnet ef dbcontext scaffold "Server=127.0.0.1;Port=3306;Database=keluargatani;User=root;Password=Cika150521.;" Pomelo.EntityFrameworkCore.MySql -o Models -c ApplicationDbContext --force --no-onconfiguring

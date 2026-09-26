@@ -12,21 +12,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KeluargaTani.Service
 {
-    public interface ICustomerService
+    public interface IProductService
     {
-        ServiceResponse<object> TambahPembeliBaru(PembeliModelDto data);
-        IQueryable<CustomerDataVM> ReadCustomerData();
-        List<ListDropdownVM> GetCustomerList();
+        ServiceResponse<object> CreateNewProduct(ProductModelDto data);
+        IQueryable<ProductModelVM> ReadProductData();
+        List<ListDropdownVM> GetProductList();
     }
 
-    public class CustomerService : ICustomerService
+    public class ProductService : IProductService
     {
         private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUtilService _utilServices;
         private DataTableHelper _dthelper;
-        public CustomerService(ApplicationDbContext db,
+        public ProductService(ApplicationDbContext db,
                             UserManager<ApplicationUser> userManager,
                             IHttpContextAccessor httpContextAccessor,
                             IUtilService utilServices,
@@ -39,17 +39,31 @@ namespace KeluargaTani.Service
             _dthelper = dthelper;
         }
 
-        public ServiceResponse<object> TambahPembeliBaru(PembeliModelDto data)
-        {   
-            Pembeli pembeli = new Pembeli
+        public IQueryable<ProductModelVM> ReadProductData()
+        {
+            var query = _db.Produks.Select(x => new ProductModelVM
             {
-                NamaPembeli = data.namaPembeli,
-                NomorKontak = data.nomorPembeli,
-                AlamatLahan = data.alamatPembeli,
-                Catatan = data.catatanPembeli
+                namaProduk = x.NamaProduk,
+                kategori = x.Kategori,
+                stokAwal = x.Stok,
+                status = x.Status,
+                estimasiMargin = 30, //masih dummy
+            });
+
+            return query;
+        }
+
+        public ServiceResponse<object> CreateNewProduct(ProductModelDto data)
+        {   
+            Produk produk = new Produk
+            {
+                NamaProduk = data.namaProduk,
+                Kategori = data.kategori,
+                Stok = data.stokAwal,
+                Status = data.status,
             };
 
-            _db.Pembelis.Add(pembeli);
+            _db.Produks.Add(produk);
             _db.SaveChanges();
 
             return new ServiceResponse<object> { 
@@ -58,33 +72,15 @@ namespace KeluargaTani.Service
             };
         }
 
-        public IQueryable<CustomerDataVM> ReadCustomerData()
+        public List<ListDropdownVM> GetProductList()
         {
-            var query = _db.Pembelis.Select(x => new CustomerDataVM
-            {
-                namaPembeli = x.NamaPembeli,
-                kontakPembeli = x.NomorKontak,
-                alamat = x.AlamatLahan,
-                frekuensi = "-",
-                totalBelanja = 0,
-                kontribusiLaba = "-",
-            });
-
-            return query;
-        }
-
-        public List<ListDropdownVM> GetCustomerList()
-        {
-            var list = _db.Pembelis
+            return _db.Produks
                 .Select(x => new ListDropdownVM
                 {
                     value = x.Id.ToString(),
-                    text = x.NamaPembeli
+                    text = x.NamaProduk
                 })
                 .ToList();
-
-            return list;
         }
-
     }
 }

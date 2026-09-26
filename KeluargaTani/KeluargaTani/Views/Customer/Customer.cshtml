@@ -186,9 +186,6 @@
                     ajax: {
                         url: '@Url.Action("ReadCustomerData", "Customer")',
                         type: 'POST',
-                        data: {
-                            jenisTransaksi: 'Mutasi'
-                        },
                         dataSrc: function (json) {
                             console.log('value json : ', json.data);
                             return json.data; 

@@ -21,16 +21,25 @@
     <!-- Product Table -->
     <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse text-xs">
+        <table id="productTable" class="w-full text-left border-collapse text-xs">
         <thead>
             <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px]">
-            <th class="py-3 px-3 text-center">No</th>
-            <th class="py-3 px-3">Nama Produk</th>
-            <th class="py-3 px-3">Kategori</th>
-            <th class="py-3 px-3 text-center">Estimasi Margin</th>
-            <th class="py-3 px-3 text-center">Stok</th>
-            <th class="py-3 px-3 text-center">Status</th>
-            <th class="py-3 px-3 text-center">Aksi</th>
+                <th class="py-3 px-3 text-center">No</th>
+                <th class="py-3 px-3">Nama Produk</th>
+                <th class="py-3 px-3">Kategori</th>
+                <th class="py-3 px-3 text-center">Estimasi Margin</th>
+                <th class="py-3 px-3 text-center">Stok</th>
+                <th class="py-3 px-3 text-center">Status</th>
+                <th class="py-3 px-3 text-center">Aksi</th>
+            </tr>
+            <tr id="filterRow">
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody id="products-table-tbody">
@@ -57,7 +66,7 @@
 <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-5 sm:p-6">
     <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
     <h3 id="modal-product-title" class="font-extrabold text-base text-slate-800 dark:text-slate-100">Tambah Produk Baru</h3>
-    <button onclick="closeModal('modal-product')" class="text-slate-400 hover:text-slate-600 p-1">
+    <button onclick="closeProductModal()" class="text-slate-400 hover:text-slate-600 p-1">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
     </button>
     </div>
@@ -83,16 +92,16 @@
         <div>
         <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Status Produk</label>
         <select id="prod-status" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
-            <option value="Tersedia">Tersedia</option>
-            <option value="Stok Menipis">Stok Menipis</option>
-            <option value="Habis">Habis</option>
-            <option value="Nonaktif">Nonaktif</option>
+            <option value="1">Tersedia</option>
+            <option value="2">Stok Menipis</option>
+            <option value="3">Habis</option>
+            <option value="4">Nonaktif</option>
         </select>
         </div>
     </div>
 
     <div class="flex justify-end space-x-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-        <button type="button" onclick="closeModal('modal-product')" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-bold">Batal</button>
+        <button type="button" onclick="closeProductModal()" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-bold">Batal</button>
         <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow">Simpan Produk</button>
     </div>
     </form>
@@ -103,36 +112,125 @@
     <script>
 
         $(document).ready(function(){
-            
-        });
+          initiallizeTable();
+      });
 
-        function openProductModal(){
-            const modal = document.getElementById('modal-product');
-            if(modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
+      let dataTable;
+      function initiallizeTable(){
+        console.log('oke masuk ke initiallizeTable');
+        if(dataTable) dataTable.destroy(); dataTable = null;
+        dataTable = $('#productTable').on('processing.dt', function (e, settings, processing) {
+            if (processing) {
+                Swal.fire({
+                    title: "Memuat Data...",
+                    text: "Silahkan tunggu sebentar",
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            } else {
+                Swal.close();
             }
-        };
+        }).DataTable({
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        url: '@Url.Action("ReadProductData", "Product")',
+                        type: 'POST',
+                        data: {
+                        },
+                        dataSrc: function (json) {
+                            console.log('value json : ', json.data);
+                            return json.data; 
+                        },
+                    },
+                    columns: [
+                        { 
+                            data: null,
+                            orderable: false,
+                            searchable: false,
+                            render: function (data, type, row, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            }
+                        },
+                        { data: 'namaProduk' },
+                        { data: 'kategori' },
+                        { data: 'estimasiMargin' },
+                        { data: 'stokAwal' },
+                        { data: 'status' },
+                        {
+                            data: null,
+                            render: function(data, type, row){
+                                return '<button type="button" class="btn btn-sm btn-danger" onclick="">Delete</button>';
+                            }
+                        },
+                    ],
+                    columnDefs: [
+                        {
+                            targets: '_all',
+                            className: 'dt-center',
+                        },
+                    ],
+                    initComplete: function () {
+                        ShowSearchRowWithDateAndBoolean({
+                            api: this.api(),
+                            excluded: [0,6],
+                            dateColumns: [],
+                            booleanColumns: [],
+                            colLimit: 6,
+                        });
 
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if(modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
+                        $('#filterRow').show();
+                        baseInitComplete.call(this);
+                    },
+                    drawCallback: function () {
+                    }
+                });
+
+        }
+
+        function openProductModal(e){
+           $('#modal-product').removeClass('hidden').addClass('flex');
+
         };
 
         function SubmitProduct(e) {
+            console.log('oke masuk ke SubmitProduct');
             e.preventDefault();
+            const productName = $('#prod-name').val();
+            const category = $('#prod-category').val();
+            const stock = $('#prod-stock').val();
+            const status = $('#prod-status').val();
             $.ajax({
-                url: @Url.Action("CreateNewProduct","Product"),
+                url: '@Url.Action("CreateNewProduct","Product")', 
                 type: 'POST',
-                success: function(){
-
+                data: {
+                    namaProduk: productName,
+                    kategori: category,
+                    stokAwal: stock,
+                    status: status
                 },
+                success: function(response){
+                    Swal.fire({
+                            title: 'Berhasil',
+                            text: 'Berhasil Membuat Product Baru',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            closeProductModal();
+                            dataTable.ajax.reload();
+                        });
+                },
+                error: function(err){
+                    console.error('error:', err);
+                }
             });
         };
 
-        function 
+        function closeProductModal() {
+            $('#modal-product').removeClass('flex').addClass('hidden');
+            $('#form-product')[0].reset();
+        }
     </script>
 }

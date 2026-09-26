@@ -25,6 +25,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IUtilService, UtilService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<DataTableHelper>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

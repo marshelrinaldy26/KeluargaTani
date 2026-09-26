@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using KeluargaTani.Models;
+using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
 
 namespace KeluargaTani.Models;
 
@@ -19,22 +19,17 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<Pembeli> Pembelis { get; set; }
 
+    public virtual DbSet<Produk> Produks { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseMySql("name=ConnectionStrings:MySqlConnection", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.45-mysql"));
-        }
-    }
+        => optionsBuilder.UseMySql("name=ConnectionStrings:MySqlConnection", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.45-mysql"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
         modelBuilder
             .UseCollation("utf8mb4_0900_ai_ci")
             .HasCharSet("utf8mb4");
-
         modelBuilder.Entity<Pembeli>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -59,8 +54,30 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnName("nomor_kontak");
         });
 
+        modelBuilder.Entity<Produk>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("produk");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Kategori)
+                .HasMaxLength(100)
+                .HasColumnName("kategori");
+            entity.Property(e => e.NamaProduk)
+                .HasMaxLength(100)
+                .HasColumnName("nama_produk");
+            entity.Property(e => e.Status)
+                .HasComment("1. Tersedia \r\n2. Stock Menipis\r\n3. Habis\r\n4. Non Aktif")
+                .HasColumnName("status");
+            entity.Property(e => e.Stok).HasColumnName("stok");
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
+
+
+

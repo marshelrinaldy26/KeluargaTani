@@ -24,7 +24,7 @@ namespace KeluargaTani.Controllers
             return View();
         }
 
-        public JsonResult TambahPembeliBaru(PembeliModel data)
+        public JsonResult TambahPembeliBaru(PembeliModelDto data)
         {
             try
             {
@@ -47,6 +47,13 @@ namespace KeluargaTani.Controllers
             {
                 return Json(new{result = "error"});
             }
+        }
+
+        [HttpGet]
+        public JsonResult GetCustomerList()
+        {
+            var result = _customerService.GetCustomerList();
+            return Json(result);
         }
     }
 }

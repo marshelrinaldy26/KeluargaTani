@@ -1,4 +1,4 @@
-public class PembeliModel
+public class PembeliModelDto
 {
     public string namaPembeli {get;set;}
     public string nomorPembeli {get;set;}

@@ -297,6 +297,9 @@ $(document).on("keyup", "input[data-role=numerictextbox]", function () {
 $(function () {
     $.ajaxSetup({
         error: function (jqXHR, exception) {
+            if (exception === 'abort') {
+                return; // Jangan tampilkan error jika request dibatalkan/di-abort
+            }
             if (jqXHR.status === 0) {
                 Swal.fire('Error!', 'Not connect.\n Verify Network.', 'error');
             } else if (jqXHR.status == 404) {
