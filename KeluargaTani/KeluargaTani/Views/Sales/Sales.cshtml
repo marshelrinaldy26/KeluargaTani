@@ -72,20 +72,33 @@
     <!-- Sales Table -->
     <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse text-xs">
+        <table id="salesTable" class="w-full text-left border-collapse text-xs">
         <thead>
             <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px]">
-            <th class="py-3 px-3 text-center">No</th>
-            <th class="py-3 px-3">Tanggal</th>
-            <th class="py-3 px-3">Pembeli</th>
-            <th class="py-3 px-3">Barang / Kategori</th>
-            <th class="py-3 px-3 text-right">Harga & Modal</th>
-            <th class="py-3 px-3 text-center">Qty</th>
-            <th class="py-3 px-3 text-right">Diskon</th>
-            <th class="py-3 px-3 text-right">Total Jual</th>
-            <th class="py-3 px-3 text-right">Profit</th>
-            <th class="py-3 px-3 text-center">Margin</th>
-            <th class="py-3 px-3 text-center">Aksi</th>
+              <th class="py-3 px-3 text-center">No</th>
+              <th class="py-3 px-3">Tanggal</th>
+              <th class="py-3 px-3">Pembeli</th>
+              <th class="py-3 px-3">Barang / Kategori</th>
+              <th class="py-3 px-3 text-right">Harga & Modal</th>
+              <th class="py-3 px-3 text-center">Qty</th>
+              <th class="py-3 px-3 text-right">Diskon</th>
+              <th class="py-3 px-3 text-right">Total Jual</th>
+              <th class="py-3 px-3 text-right">Profit</th>
+              <th class="py-3 px-3 text-center">Margin</th>
+              <th class="py-3 px-3 text-center">Aksi</th>
+            </tr>
+            <tr id="filterRow">
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody id="sales-table-tbody">
@@ -229,10 +242,89 @@
 
 @section Scripts {
     <script>
-
         $(document).ready(function(){
-           
+            initiallizeTable();
         });
+
+        let dataTable;
+        function initiallizeTable(){
+            if(dataTable) dataTable.destroy(); dataTable = null;
+            dataTable = $('#salesTable').on('processing.dt', function (e, settings, processing) {
+                if (processing) {
+                    Swal.fire({
+                        title: "Memuat Data...",
+                        text: "Silahkan tunggu sebentar",
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                } else {
+                    Swal.close();
+                }
+            }).DataTable({
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    url: '@Url.Action("ReadSalesData", "Sales")',
+                    type: 'POST',
+                    data: {},
+                    dataSrc: function (json) {
+                        return json.data; 
+                    },
+                },
+                columns: [
+                    { 
+                        data: null,
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    { data: 'tanggalTransaksi' },
+                    { data: 'pembeli' },
+                    { data: 'barangKategori' },
+                    { data: 'hargaModal' },
+                    { data: 'qty' },
+                    { data: 'diskon' },
+                    { 
+                        data: 'totalJual', 
+                        render: $.fn.dataTable.render.number('.', ',', 0, 'Rp ') 
+                    },
+                    { 
+                        data: 'profit', 
+                        render: $.fn.dataTable.render.number('.', ',', 0, 'Rp ') 
+                    },
+                    { 
+                        data: 'margin',
+                        render: $.fn.dataTable.render.number('.', ',', 0, '', '%') 
+                    },
+                    {
+                        data: null,
+                        render: function(data, type, row){
+                            return '<button type="button" class="btn btn-sm btn-danger" onclick="">Delete</button>';
+                        }
+                    },
+                ],
+                columnDefs: [
+                    {
+                        targets: '_all',
+                        className: 'dt-center',
+                    },
+                ],
+                initComplete: function () {
+                    ShowSearchRowWithDateAndBoolean({
+                        api: this.api(),
+                        excluded: [0,11],
+                        dateColumns: [1],
+                        booleanColumns: [],
+                        colLimit: 11,
+                    });
+                    $('#filterRow').show();
+                }
+            });
+        }
 
         function loadDaftarPembeli() {
             $.ajax({
@@ -278,17 +370,7 @@
             loadDaftarPembeli();
             loadDaftarProduk();
             $('#modal-sale').removeClass('hidden').addClass('flex');
-        };
-
-        function openImportModal() {
-            const modal = document.getElementById('modal-import-excel');
-            if(modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            } else {
-                alert("Kode HTML untuk Modal Import Excel belum dimasukkan ke halaman ini.");
-            }
-        };
+        }
 
         function closeModal(modalId) {
             const modal = document.getElementById(modalId);
@@ -296,14 +378,60 @@
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             }
-        };
+            if (modalId === 'modal-sale') {
+                $('#form-sale')[0].reset();
+                $('#sale-cust-select').val(null).trigger('change');
+                $('#sale-prod-select').val(null).trigger('change');
+            }
+        }
 
-        function exportSalesExcel() { alert("Fitur ekspor excel akan dibuat di C# Controller."); };
+        function onProductSelectChange(val) {}
+
         function handleSaleSubmit(event) { 
             event.preventDefault(); 
-            alert("Tombol simpan diklik! Anda bisa menambahkan AJAX jQuery di sini nanti."); 
-            closeModal('modal-sale'); 
-        };
-        function calculateSaleFormLive() { console.log('Kalkulasi otomatis berjalan...'); };
+            const date = $('#sale-date').val();
+            const custId = $('#sale-cust-select').val();
+            const custName = $('#sale-customer-name').val();
+            const prodId = $('#sale-prod-select').val();
+            const prodName = $('#sale-product-name').val();
+            const sellPrice = $('#sale-selling-price').val();
+            const costPrice = $('#sale-cost-price').val();
+            const qty = $('#sale-qty').val();
+            const discType = $('#sale-discount-type').val();
+            const discVal = $('#sale-discount-value').val();
+            const notes = $('#sale-notes').val();
+
+            $.ajax({
+                url: '@Url.Action("CreateNewSales", "Sales")', 
+                type: 'POST',
+                data: {
+                    tanggalTransaksi: date,
+                    idPembeli: custId,
+                    idProduk: prodId,
+                    namaBarang: prodName,
+                    hargaJual: sellPrice,
+                    modal: costPrice,
+                    qty: qty,
+                    tipeDiskon: discType,
+                    nilaiDiskon: discVal,
+                    catatan: notes
+                },
+                success: function(response){
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: 'Berhasil Mencatat Penjualan Baru',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        closeModal('modal-sale');
+                        dataTable.ajax.reload();
+                    });
+                },
+                error: function(err){
+                    console.error('error:', err);
+                }
+            });
+        }
+        function calculateSaleFormLive() { }
     </script>
 }

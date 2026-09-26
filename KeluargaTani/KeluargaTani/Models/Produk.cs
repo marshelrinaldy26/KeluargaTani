@@ -20,4 +20,6 @@ public partial class Produk
     /// 4. Non Aktif
     /// </summary>
     public sbyte Status { get; set; }
+
+    public virtual ICollection<Penjualan> Penjualans { get; set; } = new List<Penjualan>();
 }

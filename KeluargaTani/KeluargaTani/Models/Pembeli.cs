@@ -16,4 +16,6 @@ public partial class Pembeli
     public string? Catatan { get; set; }
 
     public DateTime CreatedAt { get; set; }
+
+    public virtual ICollection<Penjualan> Penjualans { get; set; } = new List<Penjualan>();
 }
