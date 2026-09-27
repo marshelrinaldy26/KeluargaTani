@@ -21,5 +21,7 @@ public partial class Produk
     /// </summary>
     public sbyte Status { get; set; }
 
+    public virtual ICollection<Pengeluaran> Pengeluarans { get; set; } = new List<Pengeluaran>();
+
     public virtual ICollection<Penjualan> Penjualans { get; set; } = new List<Penjualan>();
 }

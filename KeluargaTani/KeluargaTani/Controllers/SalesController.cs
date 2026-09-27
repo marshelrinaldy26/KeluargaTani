@@ -31,7 +31,7 @@ namespace KeluargaTani.Controllers
         {
             try
             {
-                var result = _salesService.ReadSalesData();
+                var result = _salesService.ReadSalesData().AsQueryable();
                 return _utilService.ProcessDataTable(result);
             }
             catch (Exception ex)

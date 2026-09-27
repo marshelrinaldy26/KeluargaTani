@@ -27,8 +27,8 @@ namespace KeluargaTani.Models
         public int qty { get; set; }
         public string TipeDiskon { get; set; }
         public decimal NilaiDiskon { get; set; }
-        public string hargaModal => $"Rp {HargaJual} / Rp {Modal}";
-        public string diskon => TipeDiskon == "nom" ? $"Rp {NilaiDiskon}" : $"{NilaiDiskon}%";
+        public string hargaModal => $"Rp {HargaJual:N0} / Rp {Modal:N0}";
+        public string diskon => TipeDiskon == "nom" ? $"Rp {NilaiDiskon:N0}" : $"{NilaiDiskon:0.##}%";
         private decimal SubTotalJual => HargaJual * qty;
         private decimal TotalModal => Modal * qty;
         private decimal TotalDiskon => TipeDiskon == "nom" ? NilaiDiskon : SubTotalJual * (NilaiDiskon / 100m);

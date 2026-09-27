@@ -12,7 +12,7 @@ namespace KeluargaTani.Service
     public interface ISalesService
     {
         ServiceResponse<object> CreateNewSales(SalesModelDto data);
-        IQueryable<SalesModelVM> ReadSalesData();
+        IEnumerable<SalesModelVM> ReadSalesData();
     }
 
     public class SalesService : ISalesService

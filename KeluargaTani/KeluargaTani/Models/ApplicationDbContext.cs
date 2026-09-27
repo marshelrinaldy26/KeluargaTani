@@ -16,8 +16,9 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
-
     public virtual DbSet<Pembeli> Pembelis { get; set; }
+
+    public virtual DbSet<Pengeluaran> Pengeluarans { get; set; }
 
     public virtual DbSet<Penjualan> Penjualans { get; set; }
 
@@ -56,6 +57,33 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.NomorKontak)
                 .HasMaxLength(15)
                 .HasColumnName("nomor_kontak");
+        });
+
+        modelBuilder.Entity<Pengeluaran>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("pengeluaran");
+
+            entity.HasIndex(e => e.IdProduk, "pengeluaran_produk_FK");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedAt).HasColumnName("createdAt");
+            entity.Property(e => e.IdProduk).HasColumnName("idProduk");
+            entity.Property(e => e.JumlahPengeluaran)
+                .HasPrecision(10)
+                .HasColumnName("jumlahPengeluaran");
+            entity.Property(e => e.Kriteria)
+                .HasMaxLength(100)
+                .HasComment("1. Modal Tanam\r\n2. Modal Perawatan\r\n3. Modal Tanam Dan Pewatan\r\n4. Pengeluaran Lain")
+                .HasColumnName("kriteria");
+            entity.Property(e => e.TanggalPengeluaran)
+                .HasColumnType("datetime")
+                .HasColumnName("tanggalPengeluaran");
+
+            entity.HasOne(d => d.IdProdukNavigation).WithMany(p => p.Pengeluarans)
+                .HasForeignKey(d => d.IdProduk)
+                .HasConstraintName("pengeluaran_produk_FK");
         });
 
         modelBuilder.Entity<Penjualan>(entity =>

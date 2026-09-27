@@ -165,8 +165,9 @@
   <script src="~/lib/jquery/dist/jquery.min.js"></script>
   <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
   <script src="~/sweetalert2/sweetalert2.all.min.js"></script>
-  <script src="~/js/MyScript.js"></script> 
   <script src="~/select2/select2.min.js"></script>
+  <script src="~/lib/apexcharts/apexcharts.min.js"></script>
+  <script src="~/js/MyScript.js"></script> 
   <script>
     const App = {
         toggleMobileSidebar: function() {
@@ -187,6 +188,9 @@
                     break;
                 case "sales":
                     window.location.href = '@Url.Action("Sales", "Sales")';
+                    break;
+                case "expense":
+                    window.location.href = '@Url.Action("Expenses", "Expenses")';
                     break;
                 case "products":
                     window.location.href = '@Url.Action("Product", "Product")';
