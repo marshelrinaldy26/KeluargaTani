@@ -1,6 +1,9 @@
+@using KeluargaTani.Service
+@inject ISettingService SettingService
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Manajemen Pembeli - Keluarga Tani";
+    var appSettings = await SettingService.GetGlobalSettingsAsync();
 }
 
 <!-- ========================================== -->
@@ -284,9 +287,9 @@
                 },
                 { 
                     data: 'margin',
-                    render: function(data) { //jangan lupa set margin dari database
-                        let marginClass = data >= 30 ? 'text-emerald-600' : 'text-red-500';
-                        let marginBg = data >= 30 ? 'bg-emerald-100 dark:bg-emerald-900/40' : 'bg-red-100 dark:bg-red-900/40';
+                    render: function(data) { 
+                        let marginClass = data >= @appSettings.TargetMargin ? 'text-emerald-600' : 'text-red-500';
+                        let marginBg = data >= @appSettings.TargetMargin ? 'bg-emerald-100 dark:bg-emerald-900/40' : 'bg-red-100 dark:bg-red-900/40';
                         return `<span class="px-2 py-1 rounded-md text-[10px] font-bold ${marginClass} ${marginBg}">${data.toFixed(2)}%</span>`;
                     }
                 }

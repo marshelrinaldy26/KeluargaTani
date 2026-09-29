@@ -1,6 +1,9 @@
+@using KeluargaTani.Service
+@inject ISettingService SettingService
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Sales - Keluarga Tani";
+    var appSettings = await SettingService.GetGlobalSettingsAsync();
 }
 <div id="view-sales" class="app-view space-y-6">
     
@@ -270,6 +273,7 @@
                     type: 'POST',
                     data: {},
                     dataSrc: function (json) {
+                        console.log('jsom : ', json);
                         return json.data; 
                     },
                 },
@@ -282,7 +286,12 @@
                             return meta.row + meta.settings._iDisplayStart + 1;
                         }
                     },
-                    { data: 'tanggalTransaksi' },
+                    {
+                        data: 'tanggalTransaksi',
+                        render: function(data) {
+                            return data.split(' ')[0];
+                        }
+                    },
                     { data: 'pembeli' },
                     { data: 'barangKategori' },
                     { data: 'hargaModal' },
@@ -300,7 +309,15 @@
                     },
                     { 
                         data: 'margin',
-                        render: $.fn.dataTable.render.number('.', ',', 0, '', '%') 
+                        render: function(data, type, row) {
+                            if (type === 'display') {
+                                let margin = parseFloat(data) || 0;
+                                let target = @appSettings.TargetMargin;
+                                let marginClass = margin >= target ? 'text-emerald-600' : 'text-red-500';
+                                return `<span class="font-bold ${marginClass}">${margin.toLocaleString('id-ID')}%</span>`;
+                            }
+                            return data;
+                        }
                     },
                     {
                         data: null,

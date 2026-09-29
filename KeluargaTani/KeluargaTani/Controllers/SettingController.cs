@@ -18,7 +18,7 @@ namespace KeluargaTani.Controllers
             _db = db;
             _settingService = settingService;
         }
-        
+
         public IActionResult Setting()
         {
             return View();
@@ -39,7 +39,7 @@ namespace KeluargaTani.Controllers
         }
 
         [HttpPost]
-        public JsonResult SaveSettingData(KeluargaTani.Service.SettingModelVM vm)
+        public JsonResult SaveSettingData(SettingModelVM vm)
         {
             try
             {
