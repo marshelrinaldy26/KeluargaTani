@@ -16,7 +16,10 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
+
     public virtual DbSet<Pembeli> Pembelis { get; set; }
+
+    public virtual DbSet<Pengaturan> Pengaturans { get; set; }
 
     public virtual DbSet<Pengeluaran> Pengeluarans { get; set; }
 
@@ -30,7 +33,6 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
         modelBuilder
             .UseCollation("utf8mb4_0900_ai_ci")
             .HasCharSet("utf8mb4");
@@ -57,6 +59,25 @@ public partial class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.NomorKontak)
                 .HasMaxLength(15)
                 .HasColumnName("nomor_kontak");
+        });
+
+        modelBuilder.Entity<Pengaturan>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("pengaturan");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AlamatUsaha)
+                .HasMaxLength(100)
+                .HasColumnName("alamatUsaha");
+            entity.Property(e => e.NamaPengaturan)
+                .HasMaxLength(100)
+                .HasColumnName("namaPengaturan");
+            entity.Property(e => e.NoTelp)
+                .HasMaxLength(100)
+                .HasColumnName("noTelp");
+            entity.Property(e => e.TargetMargin).HasColumnName("targetMargin");
         });
 
         modelBuilder.Entity<Pengeluaran>(entity =>

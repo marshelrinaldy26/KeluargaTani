@@ -30,6 +30,7 @@ builder.Services.AddScoped<ISalesService, SalesService>();
 builder.Services.AddScoped<IExpensesService, ExpensesService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<ISettingService, SettingService>();
 builder.Services.AddScoped<DataTableHelper>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

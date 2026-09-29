@@ -19,10 +19,6 @@
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nama Toko / Usaha</label>
             <input type="text" id="set-biz-name" required class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
         </div>
-        <div>
-            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nama Pemilik</label>
-            <input type="text" id="set-owner-name" required class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs">
-        </div>
         <div class="grid grid-cols-2 gap-2">
             <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nomor Telp / WA</label>
@@ -30,7 +26,7 @@
             </div>
             <div>
             <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Target Margin Min (%)</label>
-            <input type="number" id="set-margin-target" value="30" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-emerald-600">
+            <input type="number" id="set-margin-target" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold text-emerald-600">
             </div>
         </div>
         <div>
@@ -50,3 +46,75 @@
     </main>
     </div>
 </div>
+
+@section Scripts {
+<script>
+    $(document).ready(function() {
+        loadSettings();
+    });
+
+    function loadSettings() {
+        Swal.fire({
+            title: "Memuat Data...",
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetSettingData", "Setting")',
+            type: 'GET',
+            success: function(res) {
+                if(res.success && res.data) {
+                    $('#set-biz-name').val(res.data.namaUsaha);
+                    $('#set-phone').val(res.data.noTelp);
+                    $('#set-margin-target').val(res.data.targetMargin);
+                    $('#set-address').val(res.data.alamatUsaha);
+                }
+                Swal.close();
+            },
+            error: function(err) {
+                console.error(err);
+                Swal.close();
+            }
+        });
+    }
+
+    function handleSettingsSubmit(e) {
+        e.preventDefault();
+
+        let vm = {
+            namaUsaha: $('#set-biz-name').val(),
+            noTelp: $('#set-phone').val(),
+            targetMargin: $('#set-margin-target').val(),
+            alamatUsaha: $('#set-address').val()
+        };
+
+        Swal.fire({
+            title: "Menyimpan...",
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        $.ajax({
+            url: '@Url.Action("SaveSettingData", "Setting")',
+            type: 'POST',
+            data: vm,
+            success: function(res) {
+                if(res.success) {
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: 'Pengaturan berhasil disimpan!',
+                        icon: 'success'
+                    });
+                } else {
+                    Swal.fire('Gagal', res.message, 'error');
+                }
+            },
+            error: function(err) {
+                console.error(err);
+                Swal.fire('Error', 'Terjadi kesalahan pada server', 'error');
+            }
+        });
+    }
+</script>
+}
