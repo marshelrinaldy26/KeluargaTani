@@ -1,0 +1,12 @@
+bin/
+obj/
+.vscode/
+.vs/
+*.user
+*.suo
+*.md
+dumpIndex.txt
+scaffolded.txt
+appsettings.Development.json
+Dockerfile
+docker-compose.yml

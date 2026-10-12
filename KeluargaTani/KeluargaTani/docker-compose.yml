@@ -1,0 +1,39 @@
+services:
+  web-1:
+    container_name: keluargatani_1
+    build: .
+    ports:
+      - "5050:5050"
+    restart: always
+    environment:
+      - ASPNETCORE_HTTP_PORTS=5050
+      - ASPNETCORE_ENVIRONMENT=Production
+      - DOTNET_System_Drawing_EnableUnixSupport=true 
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+
+  web-2:
+    container_name: keluargatani_2
+    build: .
+    ports:
+      - "5051:5050"
+    restart: always
+    environment:
+      - ASPNETCORE_HTTP_PORTS=5050
+      - ASPNETCORE_ENVIRONMENT=Production
+      - DOTNET_System_Drawing_EnableUnixSupport=true 
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+
+  web-3:
+    container_name: keluargatani_3
+    build: .
+    ports:
+      - "5052:5050"
+    restart: always
+    environment:
+      - ASPNETCORE_HTTP_PORTS=5050
+      - ASPNETCORE_ENVIRONMENT=Production
+      - DOTNET_System_Drawing_EnableUnixSupport=true 
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
