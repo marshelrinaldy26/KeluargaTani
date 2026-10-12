@@ -203,9 +203,24 @@
                         { data: 'namaPembeli' },
                         { data: 'kontakPembeli' },
                         { data: 'alamat' },
-                        { data: 'frekuensi' },
-                        { data: 'totalBelanja' },
-                        { data: 'kontribusiLaba' },
+                        { 
+                            data: 'frekuensi',
+                            render: function(data) {
+                                return data + ' Kali';
+                            }
+                        },
+                        { 
+                            data: 'totalBelanja',
+                            render: $.fn.dataTable.render.number('.', ',', 0, 'Rp ')
+                        },
+                        { 
+                            data: 'kontribusiLaba',
+                            render: function(data) {
+                                let val = parseFloat(data) || 0;
+                                let colorClass = val >= 0 ? 'text-emerald-600' : 'text-red-500';
+                                return `<span class="font-bold ${colorClass}">Rp ${val.toLocaleString('id-ID')}</span>`;
+                            }
+                        },
                         {
                             data: null,
                             render: function(data, type, row){

@@ -37,6 +37,13 @@ namespace KeluargaTani.Controllers
         }
 
         [HttpPost]
+        public async Task<JsonResult> TambahRoleBaru([FromBody] RoleModelDto data)
+        {
+            var result = await _customerService.TambahRoleBaru(data);
+            return Json(new { success = result.IsSuccess, message = result.Message });
+        }
+
+        [HttpPost]
         public JsonResult ReadCustomerData()
         {
             try

@@ -87,11 +87,24 @@ namespace KeluargaTani.Controllers
 
             if (result.Succeeded)
             {
-                return Ok(new { message = "Account created successfully!" });
+                if (model.Roles != null && model.Roles.Any())
+                {
+                    await _userManager.AddToRolesAsync(user, model.Roles);
+                }
+                return Ok(new { success = true, message = "Account created successfully!" });
             }
 
-            var errors = result.Errors.Select(e => e.Description);
-            return BadRequest(new { errors });
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            return BadRequest(new { success = false, message = errors });
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult GetRoles()
+        {
+            var roleManager = HttpContext.RequestServices.GetService<RoleManager<IdentityRole>>();
+            var roles = roleManager.Roles.Select(r => new { r.Id, r.Name }).ToList();
+            return Json(roles);
         }
     }
 }

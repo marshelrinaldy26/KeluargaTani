@@ -5,3 +5,8 @@ public class PembeliModelDto
     public string alamatPembeli {get;set;}
     public string catatanPembeli {get;set;}
 }
+
+public class RoleModelDto
+{
+    public string namaRole {get;set;}
+}

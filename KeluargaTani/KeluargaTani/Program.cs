@@ -19,6 +19,7 @@ builder.Services.AddControllersWithViews()
       });
 #endif
 
+builder.Services.AddHttpClient();
 builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

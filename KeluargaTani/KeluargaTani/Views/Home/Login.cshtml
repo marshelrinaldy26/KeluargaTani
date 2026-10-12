@@ -64,17 +64,6 @@
 
             <div class="grid grid-cols-2 gap-2.5">
               <div>
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nama Usaha / Toko</label>
-                <input type="text" id="reg-biz-name" required value="Keluarga Tani" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nama Pemilik</label>
-                <input type="text" id="reg-owner-name" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm" placeholder="Nama Anda">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2.5">
-              <div>
                 <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Kata Sandi</label>
                 <input type="password" id="reg-password" required minlength="6" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm" placeholder="Min. 6 digit">
               </div>
@@ -83,22 +72,13 @@
                 <input type="password" id="reg-confirm-password" required minlength="6" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm" placeholder="Min. 6 digit">
               </div>
             </div>
-
             <div>
-              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Pertanyaan Keamanan (Pemulihan Sandi)</label>
-              <select id="reg-security-question" class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
-                <option value="Apa nama hewan peliharaan pertama Anda?">Apa nama hewan peliharaan pertama Anda?</option>
-                <option value="Di kota apa Anda dilahirkan?">Di kota apa Anda dilahirkan?</option>
-                <option value="Apa nama sekolah dasar pertama Anda?">Apa nama sekolah dasar pertama Anda?</option>
-                <option value="Apa tanaman pertanian favorit Anda?">Apa tanaman pertanian favorit Anda?</option>
-              </select>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Role</label>
+                  <select id="reg-roles" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm" multiple>
+                  </select>
+                </div>
             </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Jawaban Keamanan</label>
-              <input type="text" id="reg-security-answer" required class="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm" placeholder="Jawaban rahasia Anda">
-            </div>
-
             <button type="submitDaftar" class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow transition text-sm mt-2">
               Daftar Sekarang
             </button>
@@ -195,6 +175,59 @@
             }
         });
     }
+
+    $(document).ready(function() {
+        // Load roles
+        $.get('@Url.Action("GetRoles", "Home")', function(data) {
+            let rolesSelect = $('#reg-roles');
+            rolesSelect.empty();
+            if (data && data.length > 0) {
+                data.forEach(function(role) {
+                    rolesSelect.append(`<option value="${role.name}">${role.name}</option>`);
+                });
+            } else {
+                rolesSelect.append('<option value="">-- Belum ada role --</option>');
+            }
+        });
+
+        // Register form submit
+        $('#form-register').on('submit', function(e) {
+            e.preventDefault();
+            let username = $('#reg-username').val();
+            let password = $('#reg-password').val();
+            let confirmPassword = $('#reg-confirm-password').val();
+            let roles = $('#reg-roles').val() || [];
+
+            if (password !== confirmPassword) {
+                alert("Kata sandi tidak cocok!");
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("CreateAccount", "Home")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    Username: username,
+                    Email: username + "@@example.com", // dummy email
+                    Password: password,
+                    Roles: roles
+                }),
+                success: function(res) {
+                    if (res.success || res.message) {
+                        alert("Akun berhasil dibuat! Silakan login.");
+                        App.showAuthForm('login');
+                    } else {
+                        alert(res.message || "Gagal membuat akun.");
+                    }
+                },
+                error: function(err) {
+                    let msg = err.responseJSON && err.responseJSON.message ? err.responseJSON.message : "Terjadi kesalahan.";
+                    alert(msg);
+                }
+            });
+        });
+    });
 
   </script>
 

@@ -1,3 +1,10 @@
+@using KeluargaTani.Service
+@inject ISettingService SettingService
+@{
+    ViewData["Title"] = "Dashboard - Keluarga Tani";
+    var appSettings = await SettingService.GetGlobalSettingsAsync();
+}
+
 <!DOCTYPE html>
 <html lang="id" class="h-full">
 <head>
@@ -106,7 +113,7 @@
         <button onclick="App.navigateTo('bot')" data-view="bot" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition text-emerald-100 hover:bg-emerald-800/60 relative">
           <svg class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
           <span class="flex-1 text-left">Bot Keuangan</span>
-          <span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-400 text-slate-900 font-extrabold">30% Target</span>
+          <span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-400 text-slate-900 font-extrabold">@appSettings.TargetMargin% Target</span>
         </button>
 
         <button onclick="App.navigateTo('settings')" data-view="settings" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition text-emerald-100 hover:bg-emerald-800/60">

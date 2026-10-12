@@ -105,6 +105,8 @@
                         title: 'Berhasil',
                         text: 'Pengaturan berhasil disimpan!',
                         icon: 'success'
+                    }).then(() => {
+                        window.location.reload();
                     });
                 } else {
                     Swal.fire('Gagal', res.message, 'error');
